@@ -6,7 +6,9 @@ function Layout() {
         <>
             <div className={"flex gap-5"}>
                 <MenuBar />
-                <Outlet />
+                <div className={"max-h-[90vh] mt-[5vh] justify-center"}>
+                    <Outlet />
+                </div>
             </div>
         </>
     );
