@@ -42,9 +42,19 @@ function PeerList() {
             <h1 className={"text-2xl mb-5"}>List of connected peers :</h1>
             <div className={"flex flex-wrap gap-3"}>
                 {peers.map((peer) => (
-                    <PeerCard peer={peer} />
+                    <PeerCard
+                        key={"peercard-" + peer.UUID}
+                        className={
+                            "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
+                        }
+                        peer={peer}
+                    />
                 ))}
-                <AddPeerCard />
+                <AddPeerCard
+                    className={
+                        "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
+                    }
+                />
             </div>
         </>
     );

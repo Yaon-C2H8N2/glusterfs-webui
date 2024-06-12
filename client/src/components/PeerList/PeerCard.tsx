@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card.tsx";
 
 interface PeerCardProps {
     peer: Peer;
+    className?: string;
     onClick?: () => void;
 }
 
@@ -12,14 +13,21 @@ interface Peer {
 }
 
 function PeerCard(props: PeerCardProps) {
-    const statusColor =
-        props.peer.State === "active" ? "text-green-500" : "text-red-500";
-    const statusText = props.peer.State === "active" ? "Active" : "Inactive";
+    const statusColor: { [key: string]: string } = {
+        active: "text-green-500",
+        inactive: "text-red-500",
+    };
+    const statusText: { [key: string]: string } = {
+        active: "Active",
+        inactive: "Inactive",
+    };
 
     return (
         <Card
             className={
-                "flex flex-col justify-center text-center min-w-60 min-h-40 h-40 gap-2"
+                "flex flex-col justify-center text-center min-w-60 min-h-40 h-40 gap-2" +
+                " " +
+                props.className
             }
             onClick={props.onClick}
         >
@@ -28,7 +36,9 @@ function PeerCard(props: PeerCardProps) {
                 {"UUID : " + props.peer.UUID}
             </div>
             <div>Status :</div>
-            <div className={statusColor}>{statusText}</div>
+            <div className={statusColor[props.peer.State]}>
+                {statusText[props.peer.State]}
+            </div>
         </Card>
     );
 }
