@@ -1,8 +1,8 @@
 function VolumeList() {
     return (
-        <div>
-            <h1>VolumeList</h1>
-        </div>
+        <>
+            <h1 className={"text-2xl mb-5"}>List of created volumes :</h1>
+        </>
     );
 }
 

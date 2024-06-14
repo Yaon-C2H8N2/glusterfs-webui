@@ -1,8 +1,8 @@
 function Dashboard() {
     return (
-        <div>
-            <h1>Dashboard</h1>
-        </div>
+        <>
+            <h1 className={"text-2xl mb-5"}>Dashboard :</h1>
+        </>
     );
 }
 

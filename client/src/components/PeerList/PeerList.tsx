@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import PeerCard, { Peer } from "@/components/PeerList/PeerCard.tsx";
 import AddPeerCard from "@/components/PeerList/AddPeerCard.tsx";
+import AddPeerDialog from "@/components/PeerList/AddPeerDialog.tsx";
+import PeerDetailDialog from "@/components/PeerList/PeerDetailDialog.tsx";
 
 function PeerList() {
     const [peers, setPeers] = useState(new Array<Peer>());
@@ -42,19 +44,26 @@ function PeerList() {
             <h1 className={"text-2xl mb-5"}>List of connected peers :</h1>
             <div className={"flex flex-wrap gap-3"}>
                 {peers.map((peer) => (
-                    <PeerCard
-                        key={"peercard-" + peer.UUID}
+                    <PeerDetailDialog
+                        key={"peerdialog-" + peer.UUID}
+                        peer={peer}
+                    >
+                        <PeerCard
+                            key={"peercard-" + peer.UUID}
+                            className={
+                                "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
+                            }
+                            peer={peer}
+                        />
+                    </PeerDetailDialog>
+                ))}
+                <AddPeerDialog>
+                    <AddPeerCard
                         className={
                             "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
                         }
-                        peer={peer}
                     />
-                ))}
-                <AddPeerCard
-                    className={
-                        "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
-                    }
-                />
+                </AddPeerDialog>
             </div>
         </>
     );
