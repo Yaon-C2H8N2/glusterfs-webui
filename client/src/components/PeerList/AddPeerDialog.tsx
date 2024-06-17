@@ -10,12 +10,16 @@ import {
 import { Label } from "@/components/ui/label.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { useState } from "react";
 
 interface AddPeerDialogProps {
     children?: React.ReactNode;
+    onConfirm?: (hostname: string) => void;
 }
 
 function AddPeerDialog(props: AddPeerDialogProps) {
+    const [hostname, setHostname] = useState<string>("");
+
     return (
         <Dialog>
             <DialogTrigger asChild>{props.children}</DialogTrigger>
@@ -32,11 +36,24 @@ function AddPeerDialog(props: AddPeerDialogProps) {
                         <Label htmlFor="hostname" className="text-right">
                             Hostname
                         </Label>
-                        <Input id="hostname" className="col-span-3" />
+                        <Input
+                            id="hostname"
+                            className="col-span-3"
+                            onInput={(event) => {
+                                // @ts-ignore
+                                setHostname(event.target.value);
+                            }}
+                        />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button>Probe</Button>
+                    <Button
+                        onClick={() =>
+                            props.onConfirm && props.onConfirm(hostname)
+                        }
+                    >
+                        Probe
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

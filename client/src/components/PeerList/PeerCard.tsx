@@ -14,12 +14,12 @@ interface Peer {
 
 function PeerCard(props: PeerCardProps) {
     const statusColor: { [key: string]: string } = {
-        active: "text-green-500",
-        inactive: "text-red-500",
+        Connected: "text-green-500",
+        Disconnected: "text-red-500",
     };
     const statusText: { [key: string]: string } = {
-        active: "Active",
-        inactive: "Inactive",
+        Connected: "Connected",
+        Disconnected: "Disconnected",
     };
 
     return (

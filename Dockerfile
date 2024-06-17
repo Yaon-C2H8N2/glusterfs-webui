@@ -36,6 +36,6 @@ RUN echo "#!/bin/sh" > start.sh &&\
     echo "tail -f /var/log/glusterfs_webui.log" >> start.sh &&\
     chmod +x start.sh
 
-EXPOSE 8080
+EXPOSE 8080 8081
 
 ENTRYPOINT ["sh", "start.sh"]

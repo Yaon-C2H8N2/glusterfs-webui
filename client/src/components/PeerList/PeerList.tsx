@@ -7,37 +7,46 @@ import PeerDetailDialog from "@/components/PeerList/PeerDetailDialog.tsx";
 function PeerList() {
     const [peers, setPeers] = useState(new Array<Peer>());
 
-    const demoPeers: Peer[] = [
-        {
-            UUID: "1",
-            Hostname: "peer1",
-            State: "active",
-        },
-        {
-            UUID: "2",
-            Hostname: "peer2",
-            State: "inactive",
-        },
-        {
-            UUID: "3",
-            Hostname: "peer3",
-            State: "active",
-        },
-        {
-            UUID: "4",
-            Hostname: "peer4",
-            State: "active",
-        },
-        {
-            UUID: "5",
-            Hostname: "peer5",
-            State: "active",
-        },
-    ];
-
     useEffect(() => {
-        setPeers(demoPeers);
+        fetch("/api/peers", { method: "GET" })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Failed to fetch peers");
+            })
+            .then((data) => {
+                setPeers(data["peers"]);
+            });
     }, []);
+
+    const handleProbe = (hostname: string) => {
+        fetch("/api/peers/probe", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ hostname: hostname }),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Failed to probe peer");
+            })
+            .then(() => {
+                fetch("/api/peers", { method: "GET" })
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error("Failed to fetch peers");
+                    })
+                    .then((data) => {
+                        setPeers(data["peers"]);
+                    });
+            });
+    };
 
     return (
         <>
@@ -57,7 +66,7 @@ function PeerList() {
                         />
                     </PeerDetailDialog>
                 ))}
-                <AddPeerDialog>
+                <AddPeerDialog onConfirm={(hostname) => handleProbe(hostname)}>
                     <AddPeerCard
                         className={
                             "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
