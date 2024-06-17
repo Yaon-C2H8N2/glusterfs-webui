@@ -1,0 +1,21 @@
+server {
+	listen 8080 default_server;
+	listen [::]:8080 default_server;
+
+	root /var/www/html;
+
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name _;
+
+	location / {
+		try_files $uri $uri/ /index.html$is_args$args;
+	}
+
+	location /api/ {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Cookie $http_cookie;
+        proxy_pass http://localhost:8081;
+    }
+}
