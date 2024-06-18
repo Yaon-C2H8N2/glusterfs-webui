@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card.tsx";
-import { Badge } from "@/components/ui/badge.tsx";
 
 interface VolumeCardProps {
     volume: Volume;
@@ -27,7 +26,7 @@ function VolumeCard(props: VolumeCardProps) {
     return (
         <Card
             className={
-                "flex flex-col justify-center text-center min-w-[30.5rem] max-w-[30.5rem] p-3 min-h-60 h-60 max-h-60 gap-2" +
+                "flex flex-col justify-center text-center min-w-60 max-w-60 min-h-40 max-h-40 gap-2" +
                 " " +
                 props.className
             }
@@ -42,14 +41,6 @@ function VolumeCard(props: VolumeCardProps) {
                 <div className={statusColor[props.volume.Status]}>
                     {statusText[props.volume.Status]}
                 </div>
-            </div>
-            <div className={"text-gray-400 text-xs"}>Bricks :</div>
-            <div className={"flex flex-wrap"}>
-                {props.volume.Bricks.map((brick) => (
-                    <Badge key={brick} className={"m-1"}>
-                        {brick}
-                    </Badge>
-                ))}
             </div>
         </Card>
     );

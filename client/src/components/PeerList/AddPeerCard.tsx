@@ -10,7 +10,7 @@ function AddPeerCard(props: AddPeerCardProps) {
         <div>
             <Card
                 className={
-                    "flex flex-col justify-center text-center min-w-60 min-h-40 h-40" +
+                    "flex flex-col justify-center text-center min-w-60 max-w-60 min-h-40 max-h-40 gap-2" +
                     " " +
                     props.className
                 }
