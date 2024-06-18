@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import VolumeCard, { Volume } from "@/components/VolumeList/VolumeCard.tsx";
 import VolumeDetailDialog from "@/components/VolumeList/VolumeDetailDialog.tsx";
 import AddVolumeCard from "@/components/VolumeList/AddVolumeCard.tsx";
+import AddVolumeDialog from "@/components/VolumeList/AddVolumeDialog.tsx";
 
 function VolumeList() {
     const [volumes, setVolumes] = useState(new Array<Volume>());
@@ -50,11 +51,13 @@ function VolumeList() {
                         />
                     </VolumeDetailDialog>
                 ))}
-                <AddVolumeCard
-                    className={
-                        "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
-                    }
-                />
+                <AddVolumeDialog>
+                    <AddVolumeCard
+                        className={
+                            "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
+                        }
+                    />
+                </AddVolumeDialog>
             </div>
         </>
     );

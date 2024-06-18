@@ -61,3 +61,4 @@ function AddPeerDialog(props: AddPeerDialogProps) {
 }
 
 export default AddPeerDialog;
+export type { AddPeerDialogProps };
