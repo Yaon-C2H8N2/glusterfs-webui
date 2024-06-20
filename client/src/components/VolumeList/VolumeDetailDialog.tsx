@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Volume } from "@/components/VolumeList/VolumeCard.tsx";
+import { Pause, Play } from "lucide-react";
+import { Badge } from "@/components/ui/badge.tsx";
 
 interface VolumeDetailDialog {
     volume: Volume;
@@ -42,7 +44,23 @@ function VolumeDetailDialog(props: VolumeDetailDialog) {
                         <div>Name : {props.volume.Name}</div>
                         <div>Type : {props.volume.Type}</div>
                         <div>Status : {props.volume.Status}</div>
-                        <div>Peers :</div>
+                        <div>
+                            <div className={"flex flex-wrap gap-1"}>
+                                Peers :
+                                {props.volume.Bricks.map((brick, index) => {
+                                    return (
+                                        <Badge
+                                            key={"brick-" + index}
+                                            className={"text-[0.65rem]"}
+                                        >
+                                            {brick.Peer.Hostname +
+                                                ":" +
+                                                brick.Path}
+                                        </Badge>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <DialogFooter>
@@ -55,7 +73,7 @@ function VolumeDetailDialog(props: VolumeDetailDialog) {
                             props.onAction && props.onAction("start")
                         }
                     >
-                        Start
+                        <Play size={14} />
                     </Button>
                     <Button
                         disabled={
@@ -66,7 +84,7 @@ function VolumeDetailDialog(props: VolumeDetailDialog) {
                         variant={"destructive"}
                         onClick={() => props.onAction && props.onAction("stop")}
                     >
-                        Stop
+                        <Pause size={14} />
                     </Button>
                     <Button onClick={() => setIsOpen(false)}>Done</Button>
                 </DialogFooter>

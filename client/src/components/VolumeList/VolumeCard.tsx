@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card.tsx";
+import { Brick } from "@/components/VolumeList/AddVolumeDialog.tsx";
 
 interface VolumeCardProps {
     volume: Volume;
@@ -10,7 +11,7 @@ interface Volume {
     Name: string;
     Type: string;
     Status: string;
-    Bricks: string[];
+    Bricks: Brick[];
 }
 
 function VolumeCard(props: VolumeCardProps) {

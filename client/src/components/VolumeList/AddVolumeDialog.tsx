@@ -21,6 +21,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select.tsx";
+import { Trash2 } from "lucide-react";
 
 interface AddVolumeDialogProps {
     children?: React.ReactNode;
@@ -29,8 +30,8 @@ interface AddVolumeDialogProps {
 }
 
 type Brick = {
-    peer: Peer;
-    path: string;
+    Peer: Peer;
+    Path: string;
 };
 
 function AddVolumeDialog(props: AddVolumeDialogProps) {
@@ -54,7 +55,7 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
         {
             accessorKey: "peer",
             header: "Peer",
-            cell: ({ row }) => row.original.peer.Hostname,
+            cell: ({ row }) => row.original.Peer.Hostname,
         },
         {
             accessorKey: "path",
@@ -73,12 +74,12 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
                         setBricks(
                             bricks.filter(
                                 (brick) =>
-                                    brick.peer.UUID !== row.original.peer.UUID,
+                                    brick.Peer.UUID !== row.original.Peer.UUID,
                             ),
                         )
                     }
                 >
-                    Remove
+                    <Trash2 size={14} />
                 </Button>
             ),
         },
