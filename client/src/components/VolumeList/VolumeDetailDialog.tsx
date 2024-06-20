@@ -14,6 +14,7 @@ import { Volume } from "@/components/VolumeList/VolumeCard.tsx";
 interface VolumeDetailDialog {
     children?: React.ReactNode;
     volume: Volume;
+    onAction?: (action: string) => void;
 }
 
 function VolumeDetailDialog(props: VolumeDetailDialog) {
@@ -39,6 +40,20 @@ function VolumeDetailDialog(props: VolumeDetailDialog) {
                     </div>
                 </div>
                 <DialogFooter>
+                    <Button
+                        disabled={props.volume.Status === "Started"}
+                        onClick={() =>
+                            props.onAction && props.onAction("start")
+                        }
+                    >
+                        Start
+                    </Button>
+                    <Button
+                        disabled={props.volume.Status !== "Started"}
+                        onClick={() => props.onAction && props.onAction("stop")}
+                    >
+                        Stop
+                    </Button>
                     <Button onClick={() => setIsOpen(false)}>Done</Button>
                 </DialogFooter>
             </DialogContent>

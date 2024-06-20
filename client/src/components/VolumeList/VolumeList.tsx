@@ -43,6 +43,25 @@ function VolumeList() {
             });
     };
 
+    const handleVolumeUpdate = (volume: Volume, action: string) => {
+        let volIndex = volumes.findIndex((v) => v.Name === volume.Name);
+        volumes[volIndex].Status =
+            action === "start" ? "Starting..." : "Stopping...";
+        setVolumes([...volumes]);
+        fetch(`/api/volumes/${volume.Name}/${action}`, {
+            method: "GET",
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Failed to update volume");
+            })
+            .then(() => {
+                fetchVolumes();
+            });
+    };
+
     return (
         <>
             <h1 className={"text-2xl mb-5"}>List of created volumes :</h1>
@@ -51,6 +70,9 @@ function VolumeList() {
                     <VolumeDetailDialog
                         volume={volume}
                         key={"volume-" + volume.Name}
+                        onAction={(action) =>
+                            handleVolumeUpdate(volume, action)
+                        }
                     >
                         <VolumeCard
                             key={"volumecard-" + volume.Name}

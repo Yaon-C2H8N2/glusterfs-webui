@@ -15,13 +15,13 @@ interface Volume {
 
 function VolumeCard(props: VolumeCardProps) {
     const statusColor: { [key: string]: string } = {
-        active: "text-green-500",
-        inactive: "text-red-500",
+        Started: "text-green-500",
+        Stopped: "text-red-500",
         Created: "text-orange-500",
     };
     const statusText: { [key: string]: string } = {
-        active: "Active",
-        inactive: "Inactive",
+        Started: "Started",
+        Stopped: "Stopped",
         Created: "Created",
     };
 

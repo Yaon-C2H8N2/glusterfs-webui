@@ -9,6 +9,7 @@ import (
 func MapVolumeRoutes(router *gin.Engine) {
 	router.GET("/volumes", ListVolumes)
 	router.GET("/volumes/:name", GetVolume)
+	router.GET("/volumes/:name/:status", ChangeVolumeStatus)
 	router.POST("/volumes/create", CreateVolume)
 }
 
@@ -64,5 +65,33 @@ func GetVolume(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "GetVolume",
 		"volume":  vol,
+	})
+}
+
+func ChangeVolumeStatus(c *gin.Context) {
+	volumeName, _ := c.Params.Get("name")
+	status, _ := c.Params.Get("status")
+	vol, err := volume.GetVolume(volumeName)
+	var actions = map[string]func() error{
+		"start": vol.Start,
+		"stop":  vol.Stop,
+	}
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "Failed to get volume",
+			"error":   err.Error(),
+		})
+		return
+	}
+	err = actions[status]()
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "Failed to change volume status",
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"message": "ChangeVolumeStatus",
 	})
 }
