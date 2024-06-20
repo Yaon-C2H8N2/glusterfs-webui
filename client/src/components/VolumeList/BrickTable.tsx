@@ -148,8 +148,8 @@ export function BrickTable<TData, TValue>({
                                         onClick={() => {
                                             if (selectedPeer && brickPath) {
                                                 const brick = {
-                                                    peer: selectedPeer,
-                                                    path: brickPath,
+                                                    Peer: selectedPeer,
+                                                    Path: brickPath,
                                                 };
                                                 onAdd && onAdd(brick);
                                             }

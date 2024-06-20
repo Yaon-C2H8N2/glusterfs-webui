@@ -60,6 +60,7 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
         {
             accessorKey: "path",
             header: "Bricks",
+            cell: ({ row }) => row.original.Path,
         },
         {
             accessorKey: "actions",
