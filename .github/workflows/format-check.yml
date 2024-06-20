@@ -1,4 +1,4 @@
-name: Format check
+name: Format and type check
 
 on:
   push:
@@ -22,3 +22,6 @@ jobs:
       - name: Test prettier
         working-directory: client
         run: npx prettier . --check
+      - name: Test typescript
+        working-directory: client
+        run: npx tsc --noEmit --strict
