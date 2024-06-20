@@ -5,23 +5,30 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Peer } from "@/components/PeerList/PeerCard.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface PeerDetailDialogProps {
-    children?: React.ReactNode;
     peer: Peer;
+    onClose?: () => void;
 }
 
 function PeerDetailDialog(props: PeerDetailDialogProps) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
+
+    useEffect(() => {
+        !isOpen && props.onClose && props.onClose();
+    }, [isOpen]);
 
     return (
-        <Dialog open={isOpen} onOpenChange={(openned) => setIsOpen(openned)}>
-            <DialogTrigger asChild>{props.children}</DialogTrigger>
+        <Dialog
+            open={isOpen}
+            onOpenChange={(openned) => {
+                setIsOpen(openned);
+            }}
+        >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Details</DialogTitle>

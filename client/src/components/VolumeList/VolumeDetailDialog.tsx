@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -6,23 +6,29 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Volume } from "@/components/VolumeList/VolumeCard.tsx";
 
 interface VolumeDetailDialog {
-    children?: React.ReactNode;
     volume: Volume;
     onAction?: (action: string) => void;
+    onClose?: () => void;
 }
 
 function VolumeDetailDialog(props: VolumeDetailDialog) {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
+
+    const isControlDisabled = (status: string) => {
+        return ["Stopping...", "Starting..."].includes(status);
+    };
+
+    useEffect(() => {
+        !isOpen && props.onClose && props.onClose();
+    }, [isOpen]);
 
     return (
         <Dialog open={isOpen} onOpenChange={(openned) => setIsOpen(openned)}>
-            <DialogTrigger asChild>{props.children}</DialogTrigger>
             <DialogContent className="sm:max-w-[700px]">
                 <DialogHeader>
                     <DialogTitle>Details</DialogTitle>
@@ -41,7 +47,10 @@ function VolumeDetailDialog(props: VolumeDetailDialog) {
                 </div>
                 <DialogFooter>
                     <Button
-                        disabled={props.volume.Status === "Started"}
+                        disabled={
+                            props.volume.Status === "Started" ||
+                            isControlDisabled(props.volume.Status)
+                        }
                         onClick={() =>
                             props.onAction && props.onAction("start")
                         }
@@ -49,7 +58,11 @@ function VolumeDetailDialog(props: VolumeDetailDialog) {
                         Start
                     </Button>
                     <Button
-                        disabled={props.volume.Status !== "Started"}
+                        disabled={
+                            props.volume.Status === "Stopped" ||
+                            isControlDisabled(props.volume.Status)
+                        }
+                        variant={"destructive"}
                         onClick={() => props.onAction && props.onAction("stop")}
                     >
                         Stop

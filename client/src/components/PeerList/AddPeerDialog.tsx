@@ -5,24 +5,32 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AddPeerDialogProps {
-    children?: React.ReactNode;
     onConfirm?: (hostname: string) => void;
+    onClose?: () => void;
 }
 
 function AddPeerDialog(props: AddPeerDialogProps) {
     const [hostname, setHostname] = useState<string>("");
+    const [isOpen, setIsOpen] = useState(true);
+
+    useEffect(() => {
+        !isOpen && props.onClose && props.onClose();
+    }, [isOpen]);
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>{props.children}</DialogTrigger>
+        <Dialog
+            open={isOpen}
+            onOpenChange={(openned) => {
+                setIsOpen(openned);
+            }}
+        >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Add peer</DialogTitle>

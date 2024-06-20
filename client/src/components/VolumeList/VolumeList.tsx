@@ -6,6 +6,8 @@ import AddVolumeDialog from "@/components/VolumeList/AddVolumeDialog.tsx";
 
 function VolumeList() {
     const [volumes, setVolumes] = useState(new Array<Volume>());
+    const [volumeInDetail, setVolumeInDetail] = useState<Volume | null>(null);
+    const [openCreateVolumeDialog, setOpenCreateVolumeDialog] = useState(false);
 
     const fetchVolumes = () => {
         fetch("/api/volumes", { method: "GET" })
@@ -24,6 +26,14 @@ function VolumeList() {
         fetchVolumes();
     }, []);
 
+    useEffect(() => {
+        volumes.forEach((volume) => {
+            volumeInDetail &&
+                volumeInDetail.Name === volume.Name &&
+                setVolumeInDetail(volume);
+        });
+    }, [volumes]);
+
     const handleVolumeCreate = (volume: Object) => {
         fetch("/api/volumes/create", {
             method: "POST",
@@ -40,6 +50,7 @@ function VolumeList() {
             })
             .then(() => {
                 fetchVolumes();
+                setOpenCreateVolumeDialog(false);
             });
     };
 
@@ -66,35 +77,42 @@ function VolumeList() {
         <>
             <h1 className={"text-2xl mb-5"}>List of created volumes :</h1>
             <div className={"flex flex-wrap gap-3"}>
-                {volumes.map((volume) => (
+                {volumeInDetail && (
                     <VolumeDetailDialog
-                        volume={volume}
-                        key={"volume-" + volume.Name}
+                        volume={volumeInDetail}
+                        key={"volume-" + volumeInDetail.Name}
                         onAction={(action) =>
-                            handleVolumeUpdate(volume, action)
+                            handleVolumeUpdate(volumeInDetail, action)
                         }
-                    >
-                        <VolumeCard
-                            key={"volumecard-" + volume.Name}
-                            className={
-                                "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
-                            }
-                            volume={volume}
-                        />
-                    </VolumeDetailDialog>
-                ))}
-                <AddVolumeDialog
-                    onConfirm={(volume) => {
-                        console.log(volume);
-                        handleVolumeCreate(volume);
-                    }}
-                >
-                    <AddVolumeCard
+                        onClose={() => setVolumeInDetail(null)}
+                    />
+                )}
+                {volumes.map((volume) => (
+                    <VolumeCard
+                        key={"volumecard-" + volume.Name}
                         className={
                             "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
                         }
+                        volume={volume}
+                        onClick={() => {
+                            setVolumeInDetail(volume);
+                        }}
                     />
-                </AddVolumeDialog>
+                ))}
+                {openCreateVolumeDialog && (
+                    <AddVolumeDialog
+                        onConfirm={(volume) => {
+                            handleVolumeCreate(volume);
+                        }}
+                        onClose={() => setOpenCreateVolumeDialog(false)}
+                    />
+                )}
+                <AddVolumeCard
+                    className={
+                        "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"
+                    }
+                    onClick={() => setOpenCreateVolumeDialog(true)}
+                />
             </div>
         </>
     );

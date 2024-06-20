@@ -25,6 +25,7 @@ import {
 interface AddVolumeDialogProps {
     children?: React.ReactNode;
     onConfirm?: (volume: Object) => void;
+    onClose?: () => void;
 }
 
 type Brick = {
@@ -37,7 +38,7 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
     const [volumeName, setVolumeName] = useState<string>("");
     const [volumeType, setVolumeType] = useState<string>("");
     const [availableHosts, setAvailableHosts] = useState<Peer[]>([]);
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
     const typeOptions = [
         {
             value: "distribute",
@@ -73,6 +74,10 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
                 setAvailableHosts(data["peers"]);
             });
     }, []);
+
+    useEffect(() => {
+        !isOpen && props.onClose && props.onClose();
+    }, [isOpen]);
 
     const handleAddBrick = (brick: Brick) => {
         setBricks([...bricks, brick]);
@@ -149,7 +154,6 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
                                     type: volumeType,
                                     bricks: bricks,
                                 });
-                            setIsOpen(false);
                         }}
                     >
                         Create
