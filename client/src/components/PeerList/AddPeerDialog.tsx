@@ -39,8 +39,7 @@ function AddPeerDialog(props: AddPeerDialogProps) {
                         <Input
                             id="hostname"
                             className="col-span-3"
-                            onInput={(event) => {
-                                // @ts-ignore
+                            onChange={(event) => {
                                 setHostname(event.target.value);
                             }}
                         />

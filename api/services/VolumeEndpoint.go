@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/Yaon-C2H8N2/glusterfs-webui/models"
 	"github.com/Yaon-C2H8N2/go-glusterfs/pkg/volume"
 	"github.com/gin-gonic/gin"
 )
@@ -8,6 +9,7 @@ import (
 func MapVolumeRoutes(router *gin.Engine) {
 	router.GET("/volumes", ListVolumes)
 	router.GET("/volumes/:name", GetVolume)
+	router.POST("/volumes/create", CreateVolume)
 }
 
 func ListVolumes(c *gin.Context) {
@@ -22,6 +24,30 @@ func ListVolumes(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "ListVolumes",
 		"volumes": volumes,
+	})
+}
+
+func CreateVolume(c *gin.Context) {
+	var vol models.CreateVolumeRequest
+	err := c.BindJSON(&vol)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"message": "Failed to bind JSON",
+			"error":   err.Error(),
+		})
+		return
+	}
+	createdVol, err := volume.CreateReplicatedVolume(vol.Name, vol.Bricks)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "Failed to create volume",
+			"error":   err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"message": "CreateVolume",
+		"volume":  createdVol,
 	})
 }
 

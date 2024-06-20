@@ -7,31 +7,41 @@ import AddVolumeDialog from "@/components/VolumeList/AddVolumeDialog.tsx";
 function VolumeList() {
     const [volumes, setVolumes] = useState(new Array<Volume>());
 
-    const demoVolumes: Volume[] = [
-        {
-            Name: "vol1",
-            Type: "replicated",
-            Status: "active",
-            Bricks: [
-                "peer1:/data/vol1",
-                "peer2:/data/vol1",
-                "peer3:/data/vol1",
-                "peer4:/data/vol1",
-                "peer5:/data/vol1",
-                "peer6:/data/vol1",
-            ],
-        },
-        {
-            Name: "vol2",
-            Type: "striped",
-            Status: "active",
-            Bricks: ["peer1:/data/vol2", "peer2:/data/vol2"],
-        },
-    ];
+    const fetchVolumes = () => {
+        fetch("/api/volumes", { method: "GET" })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Failed to fetch volumes");
+            })
+            .then((data) => {
+                setVolumes(data["volumes"] ?? []);
+            });
+    };
 
     useEffect(() => {
-        setVolumes(demoVolumes);
+        fetchVolumes();
     }, []);
+
+    const handleVolumeCreate = (volume: Object) => {
+        fetch("/api/volumes/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(volume),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Failed to probe peer");
+            })
+            .then(() => {
+                fetchVolumes();
+            });
+    };
 
     return (
         <>
@@ -51,7 +61,12 @@ function VolumeList() {
                         />
                     </VolumeDetailDialog>
                 ))}
-                <AddVolumeDialog>
+                <AddVolumeDialog
+                    onConfirm={(volume) => {
+                        console.log(volume);
+                        handleVolumeCreate(volume);
+                    }}
+                >
                     <AddVolumeCard
                         className={
                             "hover:cursor-pointer hover:shadow-primary transition-shadow duration-100"

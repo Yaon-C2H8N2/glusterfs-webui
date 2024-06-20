@@ -35,9 +35,11 @@ function PeerCard(props: PeerCardProps) {
             <div className={"text-gray-400 text-xs"}>
                 {"UUID : " + props.peer.UUID}
             </div>
-            <div>Status :</div>
-            <div className={statusColor[props.peer.State]}>
-                {statusText[props.peer.State]}
+            <div className={"flex gap-2 justify-center"}>
+                <div>Status :</div>
+                <div className={statusColor[props.peer.State]}>
+                    {statusText[props.peer.State]}
+                </div>
             </div>
         </Card>
     );

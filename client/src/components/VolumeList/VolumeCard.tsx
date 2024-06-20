@@ -17,16 +17,18 @@ function VolumeCard(props: VolumeCardProps) {
     const statusColor: { [key: string]: string } = {
         active: "text-green-500",
         inactive: "text-red-500",
+        Created: "text-orange-500",
     };
     const statusText: { [key: string]: string } = {
         active: "Active",
         inactive: "Inactive",
+        Created: "Created",
     };
 
     return (
         <Card
             className={
-                "flex flex-col justify-center text-center min-w-60 max-w-60 min-h-40 max-h-40 gap-2" +
+                "flex flex-col justify-center text-center min-w-60 max-w-60 min-h-40 max-h-40 gap-2 " +
                 " " +
                 props.className
             }

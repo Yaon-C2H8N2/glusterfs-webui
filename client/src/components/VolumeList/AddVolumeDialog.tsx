@@ -24,7 +24,7 @@ import {
 
 interface AddVolumeDialogProps {
     children?: React.ReactNode;
-    onConfirm?: () => void;
+    onConfirm?: (volume: Object) => void;
 }
 
 type Brick = {
@@ -34,8 +34,20 @@ type Brick = {
 
 function AddVolumeDialog(props: AddVolumeDialogProps) {
     const [bricks, setBricks] = useState<Brick[]>([]);
+    const [volumeName, setVolumeName] = useState<string>("");
+    const [volumeType, setVolumeType] = useState<string>("");
     const [availableHosts, setAvailableHosts] = useState<Peer[]>([]);
-    const typeOptions = ["Distributed", "Replicated"];
+    const [isOpen, setIsOpen] = useState(false);
+    const typeOptions = [
+        {
+            value: "distribute",
+            label: "Distribute",
+        },
+        {
+            value: "replicate",
+            label: "Replicate",
+        },
+    ];
 
     const columns: ColumnDef<Brick>[] = [
         {
@@ -50,19 +62,16 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
     ];
 
     useEffect(() => {
-        const dummyHosts: Peer[] = [
-            {
-                UUID: "1",
-                Hostname: "peer1",
-                State: "Connected",
-            },
-            {
-                UUID: "2",
-                Hostname: "peer2",
-                State: "Connected",
-            },
-        ];
-        setAvailableHosts(dummyHosts);
+        fetch("/api/peers", { method: "GET" })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Failed to fetch peers");
+            })
+            .then((data) => {
+                setAvailableHosts(data["peers"]);
+            });
     }, []);
 
     const handleAddBrick = (brick: Brick) => {
@@ -70,7 +79,7 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
     };
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={(openned) => setIsOpen(openned)}>
             <DialogTrigger asChild>{props.children}</DialogTrigger>
             <DialogContent className="sm:max-w-[700px]">
                 <DialogHeader>
@@ -86,21 +95,38 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
                         <Label htmlFor="name" className="text-center">
                             Name
                         </Label>
-                        <Input id="name" className="col-span-3" />
+                        <Input
+                            id="name"
+                            className="col-span-3"
+                            onChange={(event) =>
+                                setVolumeName(event.target.value)
+                            }
+                        />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="type" className="text-center">
                             Type
                         </Label>
                         <div id="type" className="col-span-3">
-                            <Select>
+                            <Select
+                                onValueChange={(value) => setVolumeType(value)}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select a type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {typeOptions.map((type) => (
-                                        <SelectItem key={type} value={type}>
-                                            {type}
+                                        <SelectItem
+                                            key={type.value}
+                                            value={type.value}
+                                            disabled={
+                                                type.value !== "replicate"
+                                            }
+                                        >
+                                            {type.value !== "replicate"
+                                                ? type.label +
+                                                  " (Not implemented)"
+                                                : type.label}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -116,7 +142,15 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
                 </div>
                 <DialogFooter>
                     <Button
-                        onClick={() => props.onConfirm && props.onConfirm()}
+                        onClick={() => {
+                            props.onConfirm &&
+                                props.onConfirm({
+                                    name: volumeName,
+                                    type: volumeType,
+                                    bricks: bricks,
+                                });
+                            setIsOpen(false);
+                        }}
                     >
                         Create
                     </Button>

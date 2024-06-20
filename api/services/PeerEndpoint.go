@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/Yaon-C2H8N2/glusterfs-webui/models"
 	"github.com/Yaon-C2H8N2/go-glusterfs/pkg/peer"
 	"github.com/gin-gonic/gin"
 )
@@ -27,9 +28,7 @@ func ListPeers(c *gin.Context) {
 }
 
 func ProbePeer(c *gin.Context) {
-	var body struct {
-		Hostname string `json:"hostname"`
-	}
+	var body models.PeerProbRequest
 	err := c.BindJSON(&body)
 	if err != nil {
 		c.JSON(400, gin.H{
