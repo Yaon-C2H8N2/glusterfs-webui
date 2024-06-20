@@ -76,15 +76,25 @@ export function BrickTable<TData, TValue>({
                         <TableRow
                             key={row.id}
                             data-state={row.getIsSelected() && "selected"}
+                            className={"group"}
                         >
-                            {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext(),
-                                    )}
-                                </TableCell>
-                            ))}
+                            {row.getVisibleCells().map((cell) => {
+                                return (
+                                    <TableCell
+                                        key={cell.id}
+                                        className={
+                                            cell.column.id === "actions"
+                                                ? "flex justify-end"
+                                                : ""
+                                        }
+                                    >
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext(),
+                                        )}
+                                    </TableCell>
+                                );
+                            })}
                         </TableRow>
                     ))}
                     <TableRow>

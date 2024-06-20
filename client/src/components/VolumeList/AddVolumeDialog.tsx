@@ -60,6 +60,28 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
             accessorKey: "path",
             header: "Bricks",
         },
+        {
+            accessorKey: "actions",
+            header: "",
+            cell: ({ row }) => (
+                <Button
+                    className={
+                        "group-hover:visible invisible opacity-0 group-hover:opacity-100 transition duration-300"
+                    }
+                    variant={"destructive"}
+                    onClick={() =>
+                        setBricks(
+                            bricks.filter(
+                                (brick) =>
+                                    brick.peer.UUID !== row.original.peer.UUID,
+                            ),
+                        )
+                    }
+                >
+                    Remove
+                </Button>
+            ),
+        },
     ];
 
     useEffect(() => {
@@ -147,6 +169,7 @@ function AddVolumeDialog(props: AddVolumeDialogProps) {
                 </div>
                 <DialogFooter>
                     <Button
+                        disabled={!volumeName || !volumeType || !bricks.length}
                         onClick={() => {
                             props.onConfirm &&
                                 props.onConfirm({
