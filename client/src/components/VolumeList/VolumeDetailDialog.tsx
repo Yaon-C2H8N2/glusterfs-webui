@@ -60,6 +60,7 @@ function VolumeDetailDialog(props: VolumeDetailDialog) {
                     <Button
                         disabled={
                             props.volume.Status === "Stopped" ||
+                            props.volume.Status === "Created" ||
                             isControlDisabled(props.volume.Status)
                         }
                         variant={"destructive"}
