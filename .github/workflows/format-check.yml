@@ -1,0 +1,27 @@
+name: Format and type check
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+      - name: Install dependencies
+        working-directory: client
+        run: npm ci
+      - name: Test prettier
+        working-directory: client
+        run: npx prettier . --check
+      - name: Test typescript
+        working-directory: client
+        run: npx tsc --noEmit --strict
