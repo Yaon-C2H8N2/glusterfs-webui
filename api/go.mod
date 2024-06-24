@@ -3,7 +3,7 @@ module github.com/Yaon-C2H8N2/glusterfs-webui
 go 1.22
 
 require (
-	github.com/Yaon-C2H8N2/go-glusterfs v1.0.0-alpha3
+	github.com/Yaon-C2H8N2/go-glusterfs v1.0.0-alpha4
 	github.com/gin-gonic/gin v1.10.0
 )
 
