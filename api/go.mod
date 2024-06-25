@@ -5,6 +5,7 @@ go 1.22
 require (
 	github.com/Yaon-C2H8N2/go-glusterfs v1.0.0-alpha4
 	github.com/gin-gonic/gin v1.10.0
+	github.com/gorilla/websocket v1.5.3
 )
 
 require (
