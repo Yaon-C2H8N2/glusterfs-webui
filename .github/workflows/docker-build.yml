@@ -1,0 +1,47 @@
+name: Docker Image Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_version:
+        description: 'The version of the Docker image'
+        required: true
+      scope:
+        description: 'Beta/Release ?'
+        type: choice
+        options:
+          - 'BETA'
+          - 'RELEASE'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Building the Docker image
+        run: |
+          if [ "${{ inputs.scope }}" = "BETA" ]; then
+            docker build . --tag ghcr.io/${{ secrets.DOCKER_USERNAME }}/glusterfs-webui:${{ inputs.image_version }} --tag ghcr.io/${{ secrets.DOCKER_USERNAME }}/glusterfs-webui:latest-beta
+          else
+            docker build . --tag ghcr.io/${{ secrets.DOCKER_USERNAME }}/glusterfs-webui:${{ inputs.image_version }} --tag ghcr.io/${{ secrets.DOCKER_USERNAME }}/glusterfs-webui:latest
+          fi
+
+      - name: Pushing the Docker image
+        run: |
+          docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.GITHUB_TOKEN }}
+          if [ "${{ inputs.scope }}" = "BETA" ]; then
+            docker push ghcr.io/${{ secrets.DOCKER_USERNAME }}/glusterfs-webui:latest-beta
+            docker push ghcr.io/${{ secrets.DOCKER_USERNAME }}/glusterfs-webui:${{ inputs.image_version }}
+          else
+            docker push ghcr.io/${{ secrets.DOCKER_USERNAME }}/glusterfs-webui:latest
+            docker push ghcr.io/${{ secrets.DOCKER_USERNAME }}/glusterfs-webui:${{ inputs.image_version }}
+          fi
+
+      - name: Pushing tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          tag_prefix: ""
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ inputs.image_version }}
