@@ -12,7 +12,7 @@ WORKDIR /tmp/app
 
 COPY api/ /tmp/app
 
-RUN go mod download && go build -o /tmp/app/dist/api
+RUN go mod tidy && go mod download && go build -o /tmp/app/dist/api
 
 FROM debian:stable-slim
 LABEL authors="yaon"
