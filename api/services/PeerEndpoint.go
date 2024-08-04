@@ -2,12 +2,15 @@ package services
 
 import (
 	"github.com/Yaon-C2H8N2/glusterfs-webui/models"
+	"github.com/Yaon-C2H8N2/go-glusterfs/pkg/brick"
 	"github.com/Yaon-C2H8N2/go-glusterfs/pkg/peer"
+	"github.com/Yaon-C2H8N2/go-glusterfs/pkg/volume"
 	"github.com/gin-gonic/gin"
 )
 
 func MapPeerRoutes(router *gin.Engine) {
 	router.GET("/peers", ListPeers)
+	router.GET("/peer/:hostname", PeerInfo)
 	router.POST("/peers/probe", ProbePeer)
 }
 
@@ -47,5 +50,49 @@ func ProbePeer(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"message": "ProbePeer",
+	})
+}
+
+func PeerInfo(c *gin.Context) {
+	hostname, _ := c.Params.Get("hostname")
+	peers, err := peer.ListPeers()
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "Failed to get peer info",
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	resultPeer := peer.Peer{}
+	for _, p := range peers {
+		if p.Hostname == hostname {
+			resultPeer = p
+			break
+		}
+	}
+
+	if resultPeer.Hostname == "" {
+		c.JSON(404, gin.H{
+			"message": "Peer not found",
+		})
+		return
+	}
+
+	bricks := []brick.Brick{}
+	volumes, err := volume.ListVolumes()
+	for _, vol := range volumes {
+		for _, brick := range vol.Bricks {
+			if brick.Peer.Hostname == resultPeer.Hostname {
+				bricks = append(bricks, brick)
+				break
+			}
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"message": "PeerInfo",
+		"peer":    resultPeer,
+		"bricks":  bricks,
 	})
 }
